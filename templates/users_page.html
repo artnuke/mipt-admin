@@ -1,0 +1,54 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', path='/users_styles.css') }}">
+
+<div id="users">
+    <input class="search" placeholder="Search" />
+    <button class="sort" data-sort="name">
+        Sort by name
+    </button>
+    <table>
+        <tbody class="list">
+            <tr>
+                <td class="user_id"></td>
+                <td class="username"></td>
+                <td class="gender"></td>
+                <td class="created"></td>
+                <td class="age"></td>
+                <td class="city"></td>
+                <td class="bio"></td>
+                <td class="active"></td>
+            </tr>
+        </tbody>
+    </table>
+    <ul class="pagination"></ul>
+</div>
+<div>
+    <h1>
+        New User
+    </h1>
+    <form id="add_users_form" onsubmit="return false;">
+        <label> userID:</label><br>
+        <input type="number" id="userid"><br>
+        <label for="fname">username:</label><br>
+        <input type="text" id="username" name="fname"><br>
+        <label for="lname">gender:</label><br>
+        <select id="gender" name="gender">
+            <option value="Male">Boy</option>
+            <option value="Female">Girl</option>
+            <option value="Female">Other</option>
+        </select><br>
+        <label for="lname">age:</label><br>
+        <input type="number" id="age" name="lname" min="0"><br>
+        <label for="lname">city:</label><br>
+        <input type="text" id="city" name="lname"><br>
+        <label for="lname">bio:</label><br>
+        <input type="text" id="bio" name="lname"><br>
+        <label for="lname">activate:</label><br>
+        <input id="active" type="checkbox"><br>
+        <input type="submit" value="Submit" onclick="add_user()">
+    </form>
+    <pre id="json">la lal </pre>
+</div>
+
+<script src="{{ url_for('static', path='/js/users/get_users.js') }}"></script>
