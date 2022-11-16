@@ -4,12 +4,15 @@ import json
 import datetime
 from datetime import time
 from cerberus import Validator
+import logging
+import uvicorn
+
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+mipt_db = client["mipt"]
 
 
 def get_users_collection():
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = client["mipt"]
-    mycol = mydb["users"]
+    mycol = mipt_db["users"]
     mycol.create_index("user_id", unique=True)
     return mycol
 
@@ -76,3 +79,14 @@ def list_users():
     mycol = mydb["users"]
     users_list = list(mycol.find({}, {"_id": 0}))
     return users_list
+
+
+def list_collections():
+    collection_list = []
+    for collection in mipt_db.list_collection_names():
+        collection_list.append({"groupkey": collection})
+    return collection_list
+
+
+def new_collection():
+    return True

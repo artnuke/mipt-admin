@@ -4,6 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import mongodb
 from pydantic import BaseModel
+import logging
+import uvicorn
+from logging.config import dictConfig
+import logging
+
+
+logger = logging.getLogger("mycoolapp")
 
 app = FastAPI()
 
@@ -22,11 +29,14 @@ class user(BaseModel):
 
 @app.get("/")
 async def read_root():
+    logging.error
+    ("main")
     return {"Hello": "World"}
 
 
 @app.get("/main", response_class=HTMLResponse)
 async def main_page(request: Request, response_class=HTMLResponse):
+
     return templates.TemplateResponse("main_page.html", {"request": request, "id": id})
 
 
@@ -59,8 +69,27 @@ async def main_page(request: Request):
 
 
 @app.get("/get_users")
-async def main_page(request: Request):
+async def main_page():
     response = mongodb.list_users()
+    return {
+        "status": "ok",
+        "response": response
+    }
+
+
+@app.post("/create_group")
+async def create_group(request: Request):
+    request_data = await request.json()
+    response = mongodb.create_collection(request_data.get("groupname"))
+    return {
+        "status": "ok",
+        "response": request_data
+    }
+
+
+@app.get("/get_groups")
+async def create_group():
+    response = mongodb.list_collections()
     return {
         "status": "ok",
         "response": response
