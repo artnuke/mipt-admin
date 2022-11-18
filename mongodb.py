@@ -58,7 +58,7 @@ def add_user(data: dict):
 
     if user_validator.validate(data):
         try:
-            logger.info("User data passed validation")
+            logger.info("The user data passed validation")
             user = {
                 "user_id": data['userid'],
                 "username": data["username"],
@@ -85,7 +85,7 @@ def list_users():
         collection = mipt_db["users"]
         users_list = list(collection.find({}, {"_id": 0}))
         if len(users_list) == 0:
-            logger.warning("Users list is empty")
+            logger.warning("The users list is empty")
         return users_list
     except Exception as error:
         logger.error(str(error))
@@ -112,17 +112,16 @@ def add_user_to_group(data):
         logger.info(f"Adding {user_id} to {new_group}")
         '''Prevent from creating new user'''
         if collection.count_documents({'user_id': str(user_id)}, limit=1) == 0:
-            return "User doesn't exist"
+            return "The user doesn't exist"
 
         collection.update_one({'user_id': user_id}, {
                               "$set": {"group": new_group}}, upsert=True)
-        return f"Success. User {user_id} added to group {new_group}"
+        return f"Success. The user {user_id} added to the group {new_group}"
     except Exception as error:
         return str(error)
 
 
 def list_all_groups():
-    '''Will add users to group. If property doesn't exist than it will be created.'''
     try:
         unique_group_dict_list = []
 
@@ -153,7 +152,7 @@ def list_users_of_group(group_name, include_id={"_id": 0}):
         users_list = list(collection.find(
             {"group": {"$eq": group_name}}, include_id))
         if len(users_list) == 0:
-            logger.warning("Users list is empty")
+            logger.warning("The users list is empty")
         return users_list
     except Exception as error:
         logger.error(str(error))
@@ -167,13 +166,40 @@ def add_new_chat(data):
 
         collection = mipt_db[new_chat]
 
-        users_of_group = list_users_of_group(group_name, {})
+        if collection.count_documents({'name': group_name}, limit=1) != 0:
+            return f"Group `{group_name}` is already in the chat `{new_chat}`"
 
-        logger.info(users_of_group)
+        collection.insert_one({"name": group_name})
 
-        collection.insert_many(users_of_group, {}, {"nUpserted": True})
-
-        return f'''Successfuly created new chat {new_chat}.'''
+        return f'''Successfuly created the new chat {new_chat}.'''
     except Exception as error:
         logger.error(str(error))
         return str(error)
+
+
+def list_all_groups_of_chat(chat):
+    try:
+
+        collection = mipt_db[chat]
+        group_list = list(collection.find({}, {"_id": 0}))
+        logger.info(str(group_list))
+        if len(group_list) == 0:
+            logger.warning("there are no groups!")
+
+        return group_list
+
+    except Exception as error:
+        return str(error)
+
+
+def check_chat_access(data):
+
+    chat = data['chat']
+
+    groups_of_chat = list_all_groups_of_chat(chat=chat)
+    users_of_chat = []
+    for group_name in groups_of_chat:
+        users_of_chat.append(list_users_of_group(
+            group_name=group_name.get("name")))
+
+    return users_of_chat

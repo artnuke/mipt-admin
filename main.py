@@ -124,3 +124,13 @@ async def create_group():
         "status": "ok",
         "response": response
     }
+
+
+@app.post("/check_ac")
+async def update_user(request: Request):
+    request_data = await request.json()
+    response = mongodb.check_chat_access(request_data)
+    return {
+        "status": "ok",
+        "response": response
+    }
