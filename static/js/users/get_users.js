@@ -1,14 +1,13 @@
 var options = {
-    valueNames: ['user_id', 'username', 'gender', 'created', 'age', 'city', 'bio', 'active'],
-    page: 10,
+    valueNames: ['user_id', 'username', 'gender', 'created', 'age', 'city', 'bio', 'active', 'group'],
+    page: 12,
     pagination: true
 };
 
 const get_users = async (callback) => {
-    console.log("dasdks")
     let values = await fetch("/get_users").
         then(data => { return data.json() })
-
+    console.log(values.response)
     let userList = new List('users', options, values.response);
 }
 

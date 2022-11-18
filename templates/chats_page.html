@@ -1,1 +1,32 @@
-<h1 style="border:2px solid Violet;">chats</h1>
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', path='/groups_styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/form_style.css') }}">
+
+<div id="chats">
+    <input class="search" placeholder="Search" />
+    <button class="sort" data-sort="name">
+        Sort by name
+    </button>
+    <ul class="list">
+        <li>
+            <p class="chat"> Chat Name </p>
+        </li>
+    </ul>
+    <ul class="pagination"></ul>
+</div>
+
+<div>
+    <h1>
+        New Chat
+    </h1>
+    <form id="add_users_form" onsubmit="return false;">
+        <label> Chat Name: </label><br>
+        <input type="text" id="new_chat"><br>
+        <label> Group: </label><br>
+        <input type="text" id="group"><br>
+        <input type="submit" value="Submit" onclick="create_group()">
+    </form>
+    <pre id="json"> Response </pre>
+</div>
+<script src="{{ url_for('static', path='/js/chats/get_chats.js') }}"></script>

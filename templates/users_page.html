@@ -1,6 +1,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', path='/users_styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/form_style.css') }}">
 
 <div id="users">
     <input class="search" placeholder="Search" />
@@ -10,14 +11,15 @@
     <table>
         <tbody class="list">
             <tr>
-                <td class="user_id"></td>
-                <td class="username"></td>
-                <td class="gender"></td>
-                <td class="created"></td>
-                <td class="age"></td>
-                <td class="city"></td>
-                <td class="bio"></td>
-                <td class="active"></td>
+                <td class="user_id"> User Id </td>
+                <td class="username"> Username </td>
+                <td class="gender"> Gender </td>
+                <td class="created"> Created </td>
+                <td class="age"> Age </td>
+                <td class="city"> City </td>
+                <td class="bio"> BIO </td>
+                <td class="active"> Active </td>
+                <td class="group"> Group </td>
             </tr>
         </tbody>
     </table>
@@ -48,7 +50,7 @@
         <input id="active" type="checkbox"><br>
         <input type="submit" value="Submit" onclick="add_user()">
     </form>
-    <pre id="json">la lal </pre>
+    <pre id="json"> Response </pre>
 </div>
 
 <script src="{{ url_for('static', path='/js/users/get_users.js') }}"></script>

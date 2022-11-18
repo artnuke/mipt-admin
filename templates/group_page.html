@@ -1,0 +1,28 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', path='/groups_styles.css') }}">
+
+<div id="group_user">
+    <input class="search" placeholder="Search" />
+    <button class="sort" data-sort="name">
+        Sort by name
+    </button>
+    <table>
+        <tbody class="list">
+            <tr>
+                <td class="user_id"> User Id </td>
+                <td class="username"> Username </td>
+                <td class="gender"> Gender </td>
+                <td class="created"> Created </td>
+                <td class="age"> Age </td>
+                <td class="city"> City </td>
+                <td class="bio"> BIO </td>
+                <td class="active"> Active </td>
+                <td class="group"> Group </td>
+            </tr>
+        </tbody>
+    </table>
+    <ul class="pagination"></ul>
+</div>
+
+<script src="{{ url_for('static', path='/js/users/get_group_users.js') }}"></script>

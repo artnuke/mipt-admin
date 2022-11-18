@@ -5,12 +5,9 @@ from fastapi.templating import Jinja2Templates
 import mongodb
 from pydantic import BaseModel
 import logging
-import uvicorn
-from logging.config import dictConfig
-import logging
 
-
-logger = logging.getLogger("mycoolapp")
+logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -29,8 +26,7 @@ class user(BaseModel):
 
 @app.get("/")
 async def read_root():
-    logging.error
-    ("main")
+    logger.info("logging from the root logger")
     return {"Hello": "World"}
 
 
@@ -47,8 +43,7 @@ async def main_page(request: Request, response_class=HTMLResponse):
 
 @app.get("/groups", response_class=HTMLResponse)
 async def main_page(request: Request, response_class=HTMLResponse):
-    data = {"name": "Kirill"}
-    return templates.TemplateResponse("groups_page.html", {"request": request, "some": data})
+    return templates.TemplateResponse("groups_page.html", {"request": request})
 
 
 @app.get("/users", response_class=HTMLResponse)
@@ -89,7 +84,42 @@ async def create_group(request: Request):
 
 @app.get("/get_groups")
 async def create_group():
-    response = mongodb.list_collections()
+    response = mongodb.list_all_groups()
+    return {
+        "status": "ok",
+        "response": response
+    }
+
+
+@app.post("/add_group")
+async def update_user(request: Request):
+    request_data = await request.json()
+    response = mongodb.add_user_to_group(request_data)
+    return {
+        "status": "ok",
+        "response": response
+    }
+
+
+@app.get("/groups/{group_name}", response_class=HTMLResponse)
+def read_item(group_name, request: Request, response_class=HTMLResponse):
+    response = mongodb.list_users_of_group(group_name)
+    return templates.TemplateResponse("group_page.html", {"request": request, "response": response})
+
+
+@app.post("/add_chat")
+async def update_user(request: Request):
+    request_data = await request.json()
+    response = mongodb.add_new_chat(request_data)
+    return {
+        "status": "ok",
+        "response": response
+    }
+
+
+@app.get("/get_chats")
+async def create_group():
+    response = mongodb.list_chats()
     return {
         "status": "ok",
         "response": response
