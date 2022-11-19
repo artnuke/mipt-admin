@@ -1,3 +1,4 @@
+import string
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -101,10 +102,14 @@ async def update_user(request: Request):
     }
 
 
-@app.get("/groups/{group_name}", response_class=HTMLResponse)
-def read_item(group_name, request: Request, response_class=HTMLResponse):
+@app.get("/groups/{group_name}")
+def read_item(group_name: str):
+
     response = mongodb.list_users_of_group(group_name)
-    return templates.TemplateResponse("group_page.html", {"request": request, "response": response})
+    return {
+        "status": "ok",
+        "response": response
+    }
 
 
 @app.post("/add_chat")

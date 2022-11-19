@@ -1,11 +1,7 @@
 import pymongo
-import bson.json_util as json_util
-import json
 import datetime
-from datetime import time
-from cerberus import Validator
 import logging
-import uvicorn
+
 
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
@@ -22,61 +18,27 @@ def get_users_collection():
 
 def add_user(data: dict):
 
+    logger.info(f"Add User: {data}")
     logger.info("Adding user ...")
-    user_schema = {
-        'userid': {
-            'type': 'string',
-                    'required': True
-        },
-        'username': {
-            'type': 'string',
-            'required': True
-        },
-        'gender': {
-            'type': 'string',
-            'required': True
-        },
-        'age': {
-            'type': 'string',
-            'required': True
-        },
-        'city': {
-            'type': 'string',
-            'required': True
-        },
-        'bio': {
-            'type': 'string',
-            'required': True
-        },
-        'active': {
-            'type': 'string',
-            'required': True
-        },
-    }
 
-    user_validator = Validator(user_schema)
-
-    if user_validator.validate(data):
-        try:
-            logger.info("The user data passed validation")
-            user = {
-                "user_id": data['userid'],
-                "username": data["username"],
-                "gender": data["gender"],
-                "created": str(datetime.datetime.now()),
-                "age": data["age"],
-                "city": data["city"],
-                "bio": data["bio"],
-                "active": data["active"]
-            }
-            collection = get_users_collection()
-            collection.insert_one(user)
-            return f"Successfully added user: {user['username']}"
-        except Exception as error:
-            return f"Error {str(error)}"
-    else:
-        logger.error(user_validator.errors)
-        return user_validator.errors
+    try:
+        logger.info("The user data passed validation")
+        user = {
+            "user_id": data['userid'],
+            "username": data["username"],
+            "gender": data["gender"],
+            "created": str(datetime.datetime.now()),
+            "age": data["age"],
+            "city": data["city"],
+            "bio": data["bio"],
+            "active": data["active"]
+        }
+        
+        collection = get_users_collection()
+        collection.insert_one(user)
+        return f"Successfully added user: {user['username']}"
+    except Exception as error:
+        return f"Error {str(error)}"
 
 
 def list_users():
@@ -108,7 +70,7 @@ def add_user_to_group(data):
     try:
         user_id = data["user_id"]
         new_group = data["new_group"]
-        collection = mipt_db["users"]
+        collection = get_users_collection()
         logger.info(f"Adding {user_id} to {new_group}")
         '''Prevent from creating new user'''
         if collection.count_documents({'user_id': str(user_id)}, limit=1) == 0:
@@ -126,7 +88,7 @@ def list_all_groups():
         unique_group_dict_list = []
 
         logger.info("listing users")
-        collection = mipt_db["users"]
+        collection = get_users_collection()
         group_list = list(collection.find({}, {"_id": 0, "group": 1}))
 
         if len(group_list) == 0:
@@ -148,7 +110,7 @@ def list_all_groups():
 def list_users_of_group(group_name, include_id={"_id": 0}):
     try:
         logger.info("listing users")
-        collection = mipt_db["users"]
+        collection = get_users_collection()
         users_list = list(collection.find(
             {"group": {"$eq": group_name}}, include_id))
         if len(users_list) == 0:
