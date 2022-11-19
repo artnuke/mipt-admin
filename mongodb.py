@@ -33,7 +33,7 @@ def add_user(data: dict):
             "bio": data["bio"],
             "active": data["active"]
         }
-        
+
         collection = get_users_collection()
         collection.insert_one(user)
         return f"Successfully added user: {user['username']}"
@@ -133,7 +133,7 @@ def add_new_chat(data):
 
         collection.insert_one({"name": group_name})
 
-        return f'''Successfuly created the new chat {new_chat}.'''
+        return f'''Successfuly added group {group_name} to chat {new_chat}.'''
     except Exception as error:
         logger.error(str(error))
         return str(error)
@@ -154,9 +154,10 @@ def list_all_groups_of_chat(chat):
         return str(error)
 
 
-def check_chat_access(data):
-
-    chat = data['chat']
+def check_chat_access(chat):
+    '''Check if collection exists'''
+    if chat not in mipt_db.list_collection_names():
+        return f'''Chat `{chat}` doesn't exist'''
 
     groups_of_chat = list_all_groups_of_chat(chat=chat)
     users_of_chat = []
