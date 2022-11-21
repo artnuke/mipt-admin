@@ -20,7 +20,7 @@ const create_group = async (callback) => {
 
 
     data = {
-        "user_id": user_id,
+        "user_id": parseInt(user_id),
         "new_group": new_group
     }
 

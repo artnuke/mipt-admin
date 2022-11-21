@@ -24,7 +24,7 @@ const add_user = async (callback) => {
     var active = document.getElementById("active").value;
 
     data = {
-        "userid": userid,
+        "userid": parseInt(userid),
         "username": username,
         "gender": gender,
         "age": age,

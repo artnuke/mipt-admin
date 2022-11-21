@@ -22,9 +22,9 @@ def add_user(data: dict):
     logger.info("Adding user ...")
 
     try:
-        logger.info("The user data passed validation")
+
         user = {
-            "user_id": data['userid'],
+            "user_id": int(data['userid']),
             "username": data["username"],
             "gender": data["gender"],
             "created": str(datetime.datetime.now()),
@@ -68,16 +68,16 @@ def list_chats():
 def add_user_to_group(data):
     '''Will add users to group. If property doesn't exist than it will be created.'''
     try:
-        user_id = data["user_id"]
+        user_id = int(data["user_id"])
         new_group = data["new_group"]
         collection = get_users_collection()
         logger.info(f"Adding {user_id} to {new_group}")
         '''Prevent from creating new user'''
-        if collection.count_documents({'user_id': str(user_id)}, limit=1) == 0:
+        if collection.count_documents({'user_id': user_id}, limit=1) == 0:
             return "The user doesn't exist"
 
         collection.update_one({'user_id': user_id}, {
-                              "$set": {"group": new_group}}, upsert=True)
+                              "$addToSet": {"group": new_group}}, upsert=True)
         return f"Success. The user {user_id} added to the group {new_group}"
     except Exception as error:
         return str(error)
@@ -89,14 +89,25 @@ def list_all_groups():
 
         logger.info("listing users")
         collection = get_users_collection()
-        group_list = list(collection.find({}, {"_id": 0, "group": 1}))
+        unprepered_group_list = list(
+            collection.find({}, {"_id": 0, "group": 1}))
+        group_list = []
+
+        ''''conjunct arrays to one array'''
+        for item in unprepered_group_list:
+            group_list.append(item.get("group"))
+
+        '''make a flat list'''
+        group_list = [item for sublist in group_list for item in sublist]
+
+        logger.info(group_list)
 
         if len(group_list) == 0:
             logger.warning("there are no groups!")
 
-        '''Make all values of list unique'''
+        '''Make all values of the list unique'''
         unique_list = list(
-            set(val for dic in group_list for val in dic.values()))
+            set((group_list)))
 
         for group in unique_list:
             unique_group_dict_list.append({"groupkey": group})
