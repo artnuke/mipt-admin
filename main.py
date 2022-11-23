@@ -4,7 +4,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import mongodb
-from pydantic import BaseModel
 import logging
 
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
@@ -14,15 +13,6 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
-
-class user(BaseModel):
-    username: str
-    gender: str
-    age: int
-    city: str
-    bio: str | None = None
-    activate: bool
 
 
 @app.get("/")
@@ -125,6 +115,7 @@ async def update_user(request: Request):
 @app.get("/get_chats")
 async def create_group():
     response = mongodb.list_chats()
+    logger.info(f"my list {response}")
     return {
         "status": "ok",
         "response": response

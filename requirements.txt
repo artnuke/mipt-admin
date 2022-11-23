@@ -1,5 +1,5 @@
 fastapi==0.86.0
 uvicorn==0.19.0
 jinja2
-pymongo==4.3.2
 cerberus
+pymongo==4.2.0

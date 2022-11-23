@@ -1,12 +1,14 @@
 import pymongo
 import datetime
 import logging
+import os
 
 
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+MONGO_URL = os.environ.get("MONGO_URL")
+client = pymongo.MongoClient(MONGO_URL)
 mipt_db = client["mipt"]
 
 
@@ -93,6 +95,9 @@ def list_all_groups():
             collection.find({}, {"_id": 0, "group": 1}))
         group_list = []
 
+        if unprepered_group_list == [{}]:
+            return []
+
         ''''conjunct arrays to one array'''
         for item in unprepered_group_list:
             group_list.append(item.get("group"))
@@ -126,6 +131,7 @@ def list_users_of_group(group_name, include_id={"_id": 0}):
             {"group": {"$eq": group_name}}, include_id))
         if len(users_list) == 0:
             logger.warning("The users list is empty")
+
         return users_list
     except Exception as error:
         logger.error(str(error))
@@ -158,7 +164,6 @@ def list_all_groups_of_chat(chat):
         logger.info(str(group_list))
         if len(group_list) == 0:
             logger.warning("there are no groups!")
-
         return group_list
 
     except Exception as error:

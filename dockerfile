@@ -5,8 +5,12 @@ FROM $BASE_CONTAINER:$UBUNTU_VERSION
 
 WORKDIR /mipt-admin
 
-COPY main.py ./
-COPY requirements.txt ./
+COPY main.py /mipt-admin
+COPY mongodb.py /mipt-admin
+COPY templates /mipt-admin/templates
+COPY static /mipt-admin/static
+COPY requirements.txt /mipt-admin
+COPY logging.conf /mipt-admin
 
 ENV PYTHON_VERSION=3.9
 
